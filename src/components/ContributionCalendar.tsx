@@ -166,12 +166,16 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
   };
 
   const handleCellMouseEnter = (dateStr: string) => {
-    if (!selectedCell) {
+    console.log('Mouse enter:', dateStr); // Debug log
+    // Only show tooltip if no cell is selected, or if this is the selected cell
+    if (!selectedCell || selectedCell === dateStr) {
       setActiveTooltip(dateStr);
     }
   };
 
   const handleCellMouseLeave = () => {
+    console.log('Mouse leave'); // Debug log
+    // Only hide tooltip if no cell is selected
     if (!selectedCell) {
       setActiveTooltip(null);
     }
@@ -225,23 +229,32 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
 
   return (
     <>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">Logged in as:</span>
-          <span className="text-purple-600 font-medium">{username}</span>
+      {/* Simple Clean Header */}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-sm text-gray-500">Logged in as</span>
+              <div className="font-semibold text-gray-900">{username}</div>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+          >
+            Logout
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          Logout
-        </button>
       </div>
 
       {/* Main Calendar Card */}
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 animate-fadeIn max-w-full overflow-hidden">
-        <div className="space-y-6">
+        <div className="space-y-6 px-4"> {/* Added horizontal padding for tooltip space */}
           {/* Calendar Controls */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-2">
@@ -305,14 +318,19 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
             </div>
           </div>
           
-          {/* Contribution Count */}
-          <div className="text-center text-lg font-semibold">
-            {getTotalContributions()} contributions in {selectedButton}
+          {/* Contribution Count - Simple and Clean */}
+          <div className="text-center py-2">
+            <span className="text-2xl font-bold text-gray-900">
+              {getTotalContributions()}
+            </span>
+            <span className="text-gray-600 ml-2">
+              contributions in {selectedButton}
+            </span>
           </div>
           
           {/* Calendar Grid */}
-          <div className="space-y-2 overflow-x-auto">
-            <div className="flex min-w-[1000px]">
+          <div className="space-y-2">
+            <div className="flex min-w-[1000px] mx-auto">
               {/* Day Labels */}
               <div className="w-16">
                 <div className="h-5" />
@@ -345,7 +363,7 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
                 </div>
                 
                 {/* Contribution Grid */}
-                <div className="grid grid-flow-col gap-1">
+                <div className="grid grid-flow-col gap-1 relative" style={{ zIndex: 1 }}>
                   {weeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="grid grid-rows-7 gap-1">
                       {getDaysInWeek(week).map((day, dayIndex) => {
@@ -362,12 +380,14 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
                           <div
                             key={`${weekIndex}-${dayIndex}`}
                             className="relative cursor-pointer group"
+                            style={{ zIndex: activeTooltip === dateStr ? 9999 : 1 }}
                             onMouseEnter={() => handleCellMouseEnter(dateStr)}
                             onMouseLeave={handleCellMouseLeave}
                             onClick={() => handleCellClick(dateStr)}
+                            title={`${format(day, "MMMM d, yyyy")} - ${contributionCount} contribution${contributionCount !== 1 ? "s" : ""}`} // Fallback native tooltip
                           >
                             <div
-                              className="w-4 h-4 rounded-sm transition-all duration-200 hover:ring-2 hover:ring-gray-400"
+                              className="w-4 h-4 rounded-sm transition-all duration-200 hover:ring-1 hover:ring-gray-400"
                               style={{
                                 backgroundColor: getContributionLevel(contributionCount),
                                 opacity: shouldFade ? "0.3" : "1",
@@ -381,20 +401,43 @@ const ContributionCalendar = ({ username, token }: ContributionCalendarProps) =>
                               }}
                             />
                             
-                            {/* CSS-based tooltip that appears on hover */}
+                            {/* Smart positioned tooltip that stays within bounds */}
                             {activeTooltip === dateStr && (
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded shadow-lg pointer-events-none z-50 whitespace-nowrap">
-                                <div>{format(day, "MMMM d, yyyy")}</div>
-                                <div>
-                                  {contributionCount} contribution{contributionCount !== 1 ? "s" : ""}
+                              <div 
+                                className="absolute px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl pointer-events-none whitespace-nowrap font-medium"
+                                style={{ 
+                                  zIndex: 9999,
+                                  // Vertical positioning: top rows show below, bottom rows show above
+                                  bottom: dayIndex < 2 ? 'auto' : '100%',
+                                  top: dayIndex < 2 ? '100%' : 'auto',
+                                  marginBottom: dayIndex >= 2 ? '8px' : '0',
+                                  marginTop: dayIndex < 2 ? '8px' : '0',
+                                  // More conservative horizontal positioning to prevent overflow
+                                  left: weekIndex < 5 ? '0' : weekIndex > weeks.length - 6 ? 'auto' : '50%',
+                                  right: weekIndex > weeks.length - 6 ? '0' : 'auto',
+                                  transform: weekIndex >= 5 && weekIndex <= weeks.length - 6 ? 'translateX(-50%)' : 'none',
+                                  // Ensure tooltip doesn't extend beyond viewport
+                                  maxWidth: '200px'
+                                }}>
+                                <div className="text-center">
+                                  <div className="font-semibold">{format(day, "MMM d, yyyy")}</div>
+                                  <div className="text-gray-300 text-xs">
+                                    {contributionCount} contribution{contributionCount !== 1 ? "s" : ""}
+                                  </div>
                                 </div>
-                                {/* Tooltip arrow */}
+                                {/* Smart tooltip arrow */}
                                 <div
-                                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0"
+                                  className="absolute w-0 h-0"
                                   style={{
-                                    borderLeft: "4px solid transparent",
-                                    borderRight: "4px solid transparent",
-                                    borderTop: "4px solid #1f2937",
+                                    // Vertical arrow position
+                                    [dayIndex < 2 ? 'top' : 'bottom']: '100%',
+                                    // More conservative horizontal arrow position
+                                    left: weekIndex < 5 ? '16px' : weekIndex > weeks.length - 6 ? 'auto' : '50%',
+                                    right: weekIndex > weeks.length - 6 ? '16px' : 'auto',
+                                    transform: weekIndex >= 5 && weekIndex <= weeks.length - 6 ? 'translateX(-50%)' : 'none',
+                                    borderLeft: "6px solid transparent",
+                                    borderRight: "6px solid transparent",
+                                    [dayIndex < 2 ? 'borderBottom' : 'borderTop']: "6px solid #1f2937",
                                   }}
                                 />
                               </div>
