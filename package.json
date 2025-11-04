@@ -1,6 +1,6 @@
 {
   "name": "gh-contribution-calendar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A beautiful, interactive GitHub contribution calendar component for React with real GitHub data integration",
   "type": "module",
   "main": "dist/index.es.js",
