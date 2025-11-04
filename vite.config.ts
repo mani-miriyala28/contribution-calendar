@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 import { resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig(({ mode }) => {
   if (mode === 'library') {
@@ -26,8 +29,15 @@ export default defineConfig(({ mode }) => {
               react: 'React',
               'react-dom': 'ReactDOM',
             },
+            // Extract CSS to a separate file
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.name === 'style.css') return 'style.css';
+              return assetInfo.name;
+            },
           },
         },
+        // Ensure CSS is extracted
+        cssCodeSplit: false,
       },
       resolve: {
         alias: {

@@ -1,3 +1,6 @@
+// Import compiled CSS styles
+import './compiled-styles.css';
+
 // Main library export for GitHub Contribution Calendar npm package
 export { default as GitHubContributionCalendar } from './components/GitHubContributionCalendar';
 export { default as themes } from './utils/themes';
