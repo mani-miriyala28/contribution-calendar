@@ -1,19 +1,31 @@
 {
-  "name": "github-contribution-calendar-native",
-  "version": "1.0.0",
-  "description": "GitHub Contribution Calendar with native HTML elements and React",
+  "name": "gh-contribution-calendar",
+  "version": "1.0.2",
+  "description": "A beautiful, interactive GitHub contribution calendar component for React with real GitHub data integration",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.es.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/style.css"
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:lib": "vite build --mode library",
+    "build": "tsc && vite build --mode library",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "pack": "npm pack --dry-run"
   },
   "keywords": [
     "github",
@@ -21,14 +33,27 @@
     "calendar",
     "react",
     "typescript",
-    "npm-package"
+    "npm-package",
+    "github-api",
+    "data-visualization",
+    "contribution-graph",
+    "github-calendar"
   ],
-  "author": "Mani Babu",
+  "author": {
+    "name": "Mani Babu",
+    "email": "your-email@example.com",
+    "url": "https://github.com/mani-miriyala28"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mani-miriyala28/contribution-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mani-miriyala28/contribution-calendar/issues"
+  },
+  "homepage": "https://github.com/mani-miriyala28/contribution-calendar#readme",
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
     "date-fns": "^3.6.0"
   },
   "devDependencies": {
@@ -37,6 +62,9 @@
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
@@ -45,5 +73,9 @@
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }

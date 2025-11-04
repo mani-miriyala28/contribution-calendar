@@ -135,7 +135,7 @@ const Login = ({ setUsername, setToken }: LoginProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1">
-              Email / GitHub Username
+              GitHub Username
             </label>
             <input
               id="identifier"
@@ -151,8 +151,27 @@ const Login = ({ setUsername, setToken }: LoginProps) => {
               </span>
             )}
           </div>
-          
+
           <div>
+            <label htmlFor="token" className="block text-sm font-medium text-gray-700 mb-1">
+              GitHub Personal Access Token
+            </label>
+            <input
+              id="token"
+              type="password"
+              value={token}
+              onChange={(e) => setTokenLocal(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            />
+            <span className="text-xs text-gray-500 mt-1 block">
+              <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">
+                Create a token here
+              </a> (needs repo and read:user scopes)
+            </span>
+          </div>
+          
+          {/* <div>
             <label htmlFor="token" className="block text-sm font-medium text-gray-700 mb-1">
               GitHub Personal Access Token
             </label>
@@ -168,7 +187,7 @@ const Login = ({ setUsername, setToken }: LoginProps) => {
               Token must have 'repo' and 'user:email' scopes
             </div>
           </div>
-          
+           */}
           <button
             type="submit"
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
