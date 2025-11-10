@@ -1,0 +1,87 @@
+{
+  "name": "gh-contribution-calendar",
+  "version": "2.0.2",
+  "description": "A beautiful and customizable GitHub contribution calendar component for React applications with multiple themes, dark mode support, and extensive customization options",
+  "type": "module",
+  "main": "dist/index.es.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build --mode library",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "pack": "npm pack --dry-run"
+  },
+  "keywords": [
+    "react",
+    "github",
+    "contribution",
+    "calendar",
+    "typescript",
+    "npm-package",
+    "github-api",
+    "data-visualization",
+    "contribution-graph",
+    "github-calendar",
+    "dark-mode",
+    "themes",
+    "customizable",
+    "responsive",
+    "interactive",
+    "tooltips"
+  ],
+  "author": {
+    "name": "Mani Babu",
+    "email": "your-email@example.com",
+    "url": "https://github.com/mani-miriyala28"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mani-miriyala28/contribution-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mani-miriyala28/contribution-calendar/issues"
+  },
+  "homepage": "https://github.com/mani-miriyala28/contribution-calendar#readme",
+  "dependencies": {
+    "date-fns": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "tailwindcss": "^3.4.11",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.0.3"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
