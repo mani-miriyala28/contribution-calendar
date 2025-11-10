@@ -1,6 +1,6 @@
 {
   "name": "gh-contribution-calendar",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A beautiful and customizable GitHub contribution calendar component for React applications with multiple themes, dark mode support, and extensive customization options",
   "type": "module",
   "main": "dist/index.es.js",

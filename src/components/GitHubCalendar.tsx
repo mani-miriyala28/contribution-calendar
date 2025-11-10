@@ -221,10 +221,6 @@ const GitHubCalendar = ({
     return "veryHigh";
   };
 
-  const getTotalContributions = (contributions: Contribution[]) => {
-    return contributions.reduce((sum, day) => sum + day.count, 0);
-  };
-
   const getLastContributionDate = (contributions: Contribution[]) => {
     // Find the most recent date with contributions > 0
     const contributedDays = contributions
@@ -349,24 +345,7 @@ const GitHubCalendar = ({
       <div key={year} className="space-y-2" style={{ overflow: 'visible' }}>
         {/* Year Header */}
         <div className="flex items-center justify-between">
-          {/* <h3 className="text-lg font-semibold" style={{ 
-            fontSize,
-            color: colorScheme === 'dark' ? '#ffffff' : '#000000'
-          }}>
-            {year}
-          </h3> */}
-          {!hideTotalCount && (<></>
-            // <div className="text-sm" style={{ 
-            //   color: colorScheme === 'dark' ? '#d1d5db' : '#6b7280' 
-            // }}>
-            //   <span className="font-bold" style={{ 
-            //     color: colorScheme === 'dark' ? '#ffffff' : '#111827' 
-            //   }}>
-            //     {getTotalContributions(contributions)}
-            //   </span>
-            //   {' '}contributions
-            // </div>
-          )}
+          {/* Year and contributions removed - now handled in top controls */}
         </div>
 
         {/* Calendar Grid */}
@@ -557,12 +536,7 @@ const GitHubCalendar = ({
     <div className="space-y-2" style={{ overflow: 'visible' }}>
       {/* Skeleton Year Header */}
       <div className="flex items-center justify-between">
-        <div className="h-6 w-16 rounded animate-pulse" style={{ 
-          backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb' 
-        }} />
-        <div className="h-4 w-24 rounded animate-pulse" style={{ 
-          backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb' 
-        }} />
+        {/* Empty header to match layout */}
       </div>
 
       {/* Skeleton Calendar Grid */}
