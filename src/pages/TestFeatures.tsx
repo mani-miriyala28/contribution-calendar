@@ -13,11 +13,22 @@ export default function TestFeatures() {
   const [hideWeekdayLabels, setHideWeekdayLabels] = useState(false);
   const [hideTotalCount, setHideTotalCount] = useState(false);
   const [selectedYears, setSelectedYears] = useState([2025, 2024]);
-  const [showYearButtons, setShowYearButtons] = useState(true);
+  const [showYearButtons, setShowYearButtons] = useState(false);
+  const [showYearSelector, setShowYearSelector] = useState(true);
+  const [showThemeSelector, setShowThemeSelector] = useState(true);
   const [customRender, setCustomRender] = useState(false);
   const [clickedDate, setClickedDate] = useState<string | null>(null);
 
   const allThemes = getThemeNames();
+
+  const handleThemeChange = (theme: ThemeName) => {
+    setSelectedTheme(theme);
+  };
+
+  const handleYearChange = (year: number) => {
+    console.log('Year selected:', year);
+    // You can add logic here to handle year changes if needed
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -166,6 +177,24 @@ export default function TestFeatures() {
                   />
                   Year Selection Buttons
                 </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={showYearSelector}
+                    onChange={(e) => setShowYearSelector(e.target.checked)}
+                    className="mr-2"
+                  />
+                  Year Selector Dropdown
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={showThemeSelector}
+                    onChange={(e) => setShowThemeSelector(e.target.checked)}
+                    className="mr-2"
+                  />
+                  Theme Selector
+                </label>
               </div>
 
               {/* Years Selection */}
@@ -242,7 +271,13 @@ export default function TestFeatures() {
                 hideTotalCount={hideTotalCount}
                 years={selectedYears.length > 0 ? selectedYears : [2025]}
                 showYearButtons={showYearButtons}
+                showYearSelector={showYearSelector}
+                showThemeSelector={showThemeSelector}
                 availableYears={[2025, 2024, 2023, 2022, 2021]}
+                onThemeChange={(theme) => {
+                  setSelectedTheme(theme);
+                  console.log(`Theme changed to: ${theme}`);
+                }}
                 onYearChange={(year) => {
                   console.log(`Selected year: ${year}`);
                 }}
@@ -301,26 +336,35 @@ export default function TestFeatures() {
             />
           </div>
 
-          {/* Test 3: Your Profile - Custom Theme */}
+          {/* Test 3: Full Features Demo (Theme & Year Selector) */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">🎨 Test 3: Your Profile - Custom Theme</h3>
+            <h3 className="text-lg font-semibold mb-4">🎨 Test 3: Full Features Demo</h3>
             <GitHubCalendar
               username={import.meta.env.VITE_GITHUB_USERNAME || "mani-miriyala28"}
               token={import.meta.env.VITE_GITHUB_TOKEN}
-              theme="crimson"
+              theme={selectedTheme}
+              years={selectedYears}
               blockSize={8}
               blockMargin={1}
+              showThemeSelector={showThemeSelector}
+              showYearSelector={showYearSelector}
+              showYearButtons={showYearButtons}
+              onThemeChange={handleThemeChange}
+              onYearChange={handleYearChange}
             />
           </div>
 
-          {/* Test 4: Your Profile - Interaction Test */}
+          {/* Test 4: Your Profile - Year Selection Focus */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">🖱️ Test 4: Your Profile - Click Events</h3>
+            <h3 className="text-lg font-semibold mb-4">� Test 4: Year Selection Focus</h3>
             <GitHubCalendar
               username={import.meta.env.VITE_GITHUB_USERNAME || "mani-miriyala28"}
               token={import.meta.env.VITE_GITHUB_TOKEN}
               theme="nature"
-              years={[2025]}
+              years={selectedYears}
+              showYearButtons={true}
+              availableYears={[2025, 2024, 2023, 2022, 2021]}
+              onYearChange={handleYearChange}
               onDayClick={(date, count) => {
                 alert(`Clicked: ${date}\nContributions: ${count}`);
               }}

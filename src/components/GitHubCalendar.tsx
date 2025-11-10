@@ -6,7 +6,7 @@ import {
   addDays,
   subYears,
 } from "date-fns";
-import { ThemeName, getTheme } from "../utils/themes";
+import { ThemeName, getTheme, getThemeNames } from "../utils/themes";
 import {
   fetchGitHubContributions,
   Contribution,
@@ -41,6 +41,12 @@ export interface GitHubCalendarProps {
   showYearButtons?: boolean;
   /** Available years for year buttons */
   availableYears?: number[];
+  /** Show theme selector dropdown */
+  showThemeSelector?: boolean;
+  /** Show year selector dropdown */
+  showYearSelector?: boolean;
+  /** Callback when theme changes */
+  onThemeChange?: (theme: ThemeName) => void;
   /** Callback when a year is selected */
   onYearChange?: (year: number) => void;
   /** Callback when a day is clicked */
@@ -83,6 +89,9 @@ const GitHubCalendar = ({
   years: _years,
   showYearButtons = false,
   availableYears = [2025, 2024, 2023, 2022, 2021],
+  showThemeSelector = false,
+  showYearSelector = false,
+  onThemeChange,
   onYearChange,
   onDayClick,
   renderDay,
@@ -102,6 +111,9 @@ const GitHubCalendar = ({
   const [highlightedLevel, setHighlightedLevel] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedButton, setSelectedButton] = useState<string>("lastYear");
+  const [activeTheme, setActiveTheme] = useState<ThemeName>(theme as ThemeName);
+  const [activeYear, setActiveYear] = useState<number>(new Date().getFullYear() - 1);
+  const [isLastYearSelected, setIsLastYearSelected] = useState<boolean>(true);
   const [dateRange, setDateRange] = useState<{
     startDate: Date;
     endDate: Date;
@@ -152,7 +164,46 @@ const GitHubCalendar = ({
     fetchData();
   }, [username, token, dateRange]);
 
-  const currentTheme = getTheme(theme, colorScheme);
+  // Update dateRange when activeYear changes
+  useEffect(() => {
+    if (activeYear) {
+      let startDate: Date;
+      let endDate: Date;
+      
+      if (isLastYearSelected) {
+        // "Last Year" option: from this day last year to today
+        endDate = new Date(); // Today
+        startDate = subYears(endDate, 1); // Exactly one year ago from today
+      } else {
+        // Specific year: show from Jan 1st to Dec 31st of that year
+        startDate = new Date(activeYear, 0, 1); // January 1st of selected year
+        endDate = new Date(activeYear, 11, 31); // December 31st of selected year
+      }
+      
+      setDateRange({
+        startDate,
+        endDate
+      });
+    }
+  }, [activeYear, isLastYearSelected]);
+
+  const currentTheme = getTheme(activeTheme, colorScheme);
+
+  // Theme change handler
+  const handleThemeChange = (newTheme: ThemeName) => {
+    setActiveTheme(newTheme);
+    if (onThemeChange) {
+      onThemeChange(newTheme);
+    }
+  };
+
+  // Year change handler
+  const handleYearChange = (year: number) => {
+    setActiveYear(year);
+    if (onYearChange) {
+      onYearChange(year);
+    }
+  };
 
   const getContributionLevel = (count: number) => {
     if (count === 0) return currentTheme.noContributions;
@@ -295,7 +346,7 @@ const GitHubCalendar = ({
     const months = hideMonthLabels ? [] : getMonths(startDate, endDate);
 
     return (
-      <div key={year} className="space-y-4" style={{ overflow: 'visible' }}>
+      <div key={year} className="space-y-2" style={{ overflow: 'visible' }}>
         {/* Year Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold" style={{ 
@@ -568,14 +619,90 @@ const GitHubCalendar = ({
   );
 
   return (
-    <div className={`space-y-6 ${className}`} style={{ ...style, position: 'relative', overflow: 'hidden' }}>
+    <div className={`space-y-3 ${className}`} style={{ ...style, position: 'relative', overflow: 'hidden' }}>
+      {/* Compact Controls Row */}
+      {(showThemeSelector || showYearSelector || showYearButtons) && (
+        <div className="flex items-center justify-between">
+          {/* Left side: Contribution count */}
+          {!hideTotalCount && displayYears.length > 0 && (
+            <p className="text-sm font-medium" style={{ 
+              color: colorScheme === 'dark' ? '#ffffff' : '#000000' 
+            }}>
+              <span className="text-lg font-bold text-purple-600">{totalContributions}</span>{' '}
+              contributions in {isLastYearSelected ? "last year" : activeYear}
+            </p>
+          )}
+          
+          {/* Right side: Selectors */}
+          <div className="flex items-center space-x-3">
+            {/* Theme Selector */}
+            {showThemeSelector && (
+              <div className="flex items-center">
+                <select
+                  value={activeTheme}
+                  onChange={(e) => handleThemeChange(e.target.value as ThemeName)}
+                  className={`px-3 py-2 rounded border text-sm transition-all ${
+                    colorScheme === 'dark' 
+                      ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {getThemeNames().map((themeName) => (
+                    <option key={themeName} value={themeName}>
+                      {themeName.charAt(0).toUpperCase() + themeName.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Year Selector */}
+            {showYearSelector && (
+              <div className="flex items-center">
+                <select
+                  value={isLastYearSelected ? "lastYear" : activeYear}
+                  onChange={(e) => {
+                    let year: number;
+                    let isLastYear: boolean;
+                    
+                    if (e.target.value === "lastYear") {
+                      year = new Date().getFullYear() - 1;
+                      isLastYear = true;
+                    } else {
+                      year = parseInt(e.target.value);
+                      isLastYear = false;
+                    }
+                    
+                    setActiveYear(year);
+                    setIsLastYearSelected(isLastYear);
+                    handleYearChange(year);
+                  }}
+                  className={`px-3 py-2 rounded border text-sm transition-all ${
+                    colorScheme === 'dark' 
+                      ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700'
+                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <option value="lastYear">Last Year</option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Year Selection Buttons */}
       {showYearButtons && (
         <div className="flex items-center justify-end">
           <div className="flex space-x-2">
             <button
               onClick={handleLastYearClick}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`px-2 py-1 rounded text-sm font-medium transition-all ${
                 selectedButton === "lastYear"
                   ? 'bg-purple-600 text-white'
                   : colorScheme === 'dark' 
@@ -589,7 +716,7 @@ const GitHubCalendar = ({
               <button
                 key={year}
                 onClick={() => handleYearClick(year)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`px-2 py-1 rounded text-sm font-medium transition-all ${
                   selectedButton === year.toString()
                     ? 'bg-purple-600 text-white'
                     : colorScheme === 'dark' 
@@ -601,20 +728,6 @@ const GitHubCalendar = ({
               </button>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Total Contributions Display */}
-      {!hideTotalCount && displayYears.length > 0 && (
-        <div className="text-center">
-          <p className="text-lg font-semibold" style={{ 
-            color: colorScheme === 'dark' ? '#ffffff' : '#000000' 
-          }}>
-            <span className="text-2xl font-bold text-purple-600">{totalContributions}</span>{' '}
-            contributions in {selectedButton === "lastYear" ? "last year" : 
-                             selectedButton !== "lastYear" ? selectedButton : 
-                             `${displayYears.length} year${displayYears.length > 1 ? 's' : ''}`}
-          </p>
         </div>
       )}
 
