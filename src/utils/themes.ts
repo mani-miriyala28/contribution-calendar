@@ -1,5 +1,5 @@
 export type ThemeName = 'classic' | 'aurora' | 'velvet' | 'solar' | 'prism' | 'galaxy' | 'pastel' | 'monotone' | 'halloween' | 'winter' | 'nature' | 'forest' | 'crimson' | 'prison' | 'chocolate';
-
+ 
 export type ThemeColors = {
   noContributions: string;
   low: string;
@@ -7,14 +7,14 @@ export type ThemeColors = {
   high: string;
   veryHigh: string;
 };
-
+ 
 export type ColorScheme = 'light' | 'dark';
-
+ 
 export type ThemeWithSchemes = {
   light: ThemeColors;
   dark: ThemeColors;
 };
-
+ 
 const themes: Record<ThemeName, ThemeColors> = {
   classic: {
     noContributions: "#ebedf0",
@@ -122,7 +122,7 @@ const themes: Record<ThemeName, ThemeColors> = {
     high: "#4E2A1F",
   },
 };
-
+ 
 // Enhanced themes with both light and dark schemes
 const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
   classic: {
@@ -134,11 +134,11 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#216e39",
     },
     dark: {
-      noContributions: "#161b22",
-      low: "#0e4429",
-      moderate: "#006d32",
-      high: "#26a641",
-      veryHigh: "#39d353",
+      noContributions: "#374151",
+      low: "#22543d",
+      moderate: "#2d5a3d",
+      high: "#38a169",
+      veryHigh: "#48bb78",
     },
   },
   aurora: {
@@ -150,10 +150,10 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#4c566a",
     },
     dark: {
-      noContributions: "#2e3440",
-      low: "#5e81ac",
-      moderate: "#81a1c1",
-      high: "#88c0d0",
+      noContributions: "#374151",
+      low: "#4a5568",
+      moderate: "#5e81ac",
+      high: "#81a1c1",
       veryHigh: "#8fbcbb",
     },
   },
@@ -166,10 +166,10 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#851050",
     },
     dark: {
-      noContributions: "#1a0d1a",
-      low: "#4d1a4d",
-      moderate: "#801040",
-      high: "#b3195c",
+      noContributions: "#374151",
+      low: "#6b1d4a",
+      moderate: "#a0306e",
+      high: "#d1477a",
       veryHigh: "#ff69b4",
     },
   },
@@ -182,11 +182,11 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#8b0000",
     },
     dark: {
-      noContributions: "#1a1a0d",
-      low: "#4d4d00",
-      moderate: "#806600",
-      high: "#b38600",
-      veryHigh: "#ffcc00",
+      noContributions: "#374151",
+      low: "#735c0f",
+      moderate: "#a67c00",
+      high: "#d97706",
+      veryHigh: "#fbbf24",
     },
   },
   prism: {
@@ -198,7 +198,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#85dcb8",
     },
     dark: {
-      noContributions: "#1a1a1a",
+      noContributions: "#374151",
       low: "#4d2d33",
       moderate: "#3d4080",
       high: "#2d6650",
@@ -214,7 +214,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#2b1955",
     },
     dark: {
-      noContributions: "#0d0d1a",
+      noContributions: "#374151",
       low: "#1a1433",
       moderate: "#2d1f4d",
       high: "#4d3380",
@@ -230,7 +230,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#ff6b8b",
     },
     dark: {
-      noContributions: "#1a0d13",
+      noContributions: "#374151",
       low: "#4d1a26",
       moderate: "#80334d",
       high: "#b34d73",
@@ -246,7 +246,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#2f2f2f",
     },
     dark: {
-      noContributions: "#0d0d0d",
+      noContributions: "#374151",
       low: "#1a1a1a",
       moderate: "#333333",
       high: "#666666",
@@ -262,7 +262,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#03001c",
     },
     dark: {
-      noContributions: "#1a1a0d",
+      noContributions: "#374151",
       low: "#4d3300",
       moderate: "#806600",
       high: "#b39900",
@@ -278,7 +278,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#0a3069",
     },
     dark: {
-      noContributions: "#0d1a26",
+      noContributions: "#374151",
       low: "#1a3d66",
       moderate: "#2d5999",
       high: "#4d8acc",
@@ -294,7 +294,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#31572c",
     },
     dark: {
-      noContributions: "#0d1a0d",
+      noContributions: "#374151",
       low: "#1a331a",
       moderate: "#2d4d2d",
       high: "#4d804d",
@@ -358,7 +358,7 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
       veryHigh: "#58111A",
     },
     dark: {
-      noContributions: "#261a1a",
+      noContributions: "#374151",
       low: "#4d2626",
       moderate: "#663333",
       high: "#994d4d",
@@ -366,12 +366,12 @@ const enhancedThemes: Record<ThemeName, ThemeWithSchemes> = {
     },
   },
 };
-
+ 
 /**
- * Get theme colors for a specific theme and color scheme
- */
+* Get theme colors for a specific theme and color scheme
+*/
 export const getTheme = (
-  themeName: ThemeName | string, 
+  themeName: ThemeName | string,
   colorScheme: ColorScheme = 'light'
 ): ThemeColors => {
   // If custom theme object is passed
@@ -387,12 +387,13 @@ export const getTheme = (
   // Fallback to classic light theme
   return enhancedThemes.classic.light;
 };
-
+ 
 /**
- * Get all available theme names
- */
+* Get all available theme names
+*/
 export const getThemeNames = (): ThemeName[] => {
   return Object.keys(enhancedThemes) as ThemeName[];
 };
-
+ 
 export default themes;
+ 
