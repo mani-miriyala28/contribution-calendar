@@ -349,23 +349,23 @@ const GitHubCalendar = ({
       <div key={year} className="space-y-2" style={{ overflow: 'visible' }}>
         {/* Year Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold" style={{ 
+          {/* <h3 className="text-lg font-semibold" style={{ 
             fontSize,
             color: colorScheme === 'dark' ? '#ffffff' : '#000000'
           }}>
             {year}
-          </h3>
-          {!hideTotalCount && (
-            <div className="text-sm" style={{ 
-              color: colorScheme === 'dark' ? '#d1d5db' : '#6b7280' 
-            }}>
-              <span className="font-bold" style={{ 
-                color: colorScheme === 'dark' ? '#ffffff' : '#111827' 
-              }}>
-                {getTotalContributions(contributions)}
-              </span>
-              {' '}contributions
-            </div>
+          </h3> */}
+          {!hideTotalCount && (<></>
+            // <div className="text-sm" style={{ 
+            //   color: colorScheme === 'dark' ? '#d1d5db' : '#6b7280' 
+            // }}>
+            //   <span className="font-bold" style={{ 
+            //     color: colorScheme === 'dark' ? '#ffffff' : '#111827' 
+            //   }}>
+            //     {getTotalContributions(contributions)}
+            //   </span>
+            //   {' '}contributions
+            // </div>
           )}
         </div>
 
@@ -552,8 +552,99 @@ const GitHubCalendar = ({
     );
   };
 
-  // Loading state
-  if (isLoading && showLoading) {
+  // Render skeleton calendar grid for loading
+  const renderSkeletonCalendar = () => (
+    <div className="space-y-2" style={{ overflow: 'visible' }}>
+      {/* Skeleton Year Header */}
+      <div className="flex items-center justify-between">
+        <div className="h-6 w-16 rounded animate-pulse" style={{ 
+          backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb' 
+        }} />
+        <div className="h-4 w-24 rounded animate-pulse" style={{ 
+          backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb' 
+        }} />
+      </div>
+
+      {/* Skeleton Calendar Grid */}
+      <div className="overflow-x-auto" style={{ overflowY: 'hidden' }}>
+        <div className="flex min-w-[1000px]" style={{ padding: `${blockSize * 0.1}px 0` }}>
+          {/* Skeleton Weekday Labels */}
+          {!hideWeekdayLabels && (
+            <div className="w-16">
+              <div style={{ height: fontSize + 4 }} />
+              <div className="grid grid-rows-7" style={{ gap: blockMargin }}>
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`animate-pulse ${index % 2 === 1 ? 'invisible' : ''}`}
+                    style={{ 
+                      height: blockSize,
+                      width: '32px',
+                      backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb',
+                      borderRadius: '2px'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Skeleton Calendar */}
+          <div className="flex-1 relative">
+            {/* Skeleton Month Labels */}
+            {!hideMonthLabels && (
+              <div className="relative animate-pulse" style={{ height: fontSize + 4 }}>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute h-3 w-8 rounded"
+                    style={{
+                      left: `${(i / 11) * 90}%`,
+                      backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb'
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Skeleton Contribution Grid */}
+            <div 
+              className="grid grid-flow-col relative animate-pulse"
+              style={{ 
+                gap: blockMargin, 
+                zIndex: 1,
+                padding: `${blockSize * 0.1}px`,
+                margin: `-${blockSize * 0.1}px`
+              }}
+            >
+              {Array.from({ length: 53 }).map((_, weekIndex) => (
+                <div 
+                  key={weekIndex} 
+                  className="grid grid-rows-7"
+                  style={{ gap: blockMargin }}
+                >
+                  {Array.from({ length: 7 }).map((_, dayIndex) => (
+                    <div
+                      key={`${weekIndex}-${dayIndex}`}
+                      className="rounded-sm"
+                      style={{
+                        width: blockSize,
+                        height: blockSize,
+                        backgroundColor: colorScheme === 'dark' ? '#374151' : '#e5e7eb'
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Full loading state (only for initial load when no data exists)
+  if (isLoading && showLoading && yearsData.length === 0) {
     if (loading) {
       return <>{loading}</>;
     }
@@ -617,14 +708,17 @@ const GitHubCalendar = ({
   const totalContributions = displayYears.reduce((sum, yearData) => 
     sum + yearData.contributions.reduce((yearSum, day) => yearSum + day.count, 0), 0
   );
+  
+  // Show previous data during loading to avoid flickering
+  const showContributions = !isLoading || yearsData.length > 0;
 
   return (
     <div className={`space-y-3 ${className}`} style={{ ...style, position: 'relative', overflow: 'hidden' }}>
       {/* Compact Controls Row */}
       {(showThemeSelector || showYearSelector || showYearButtons) && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-3 md:space-y-0">
           {/* Left side: Contribution count */}
-          {!hideTotalCount && displayYears.length > 0 && (
+          {!hideTotalCount && showContributions && displayYears.length > 0 && (
             <p className="text-sm font-medium" style={{ 
               color: colorScheme === 'dark' ? '#ffffff' : '#000000' 
             }}>
@@ -633,7 +727,7 @@ const GitHubCalendar = ({
             </p>
           )}
           
-          {/* Right side: Selectors */}
+          {/* Right side: Selectors - always in row direction */}
           <div className="flex items-center space-x-3">
             {/* Theme Selector */}
             {showThemeSelector && (
@@ -731,11 +825,12 @@ const GitHubCalendar = ({
         </div>
       )}
 
-      {displayYears.map((yearData) => renderYearCalendar(yearData))}
+      {/* Calendar Content - show skeleton during loading or real data when ready */}
+      {isLoading ? renderSkeletonCalendar() : displayYears.map((yearData) => renderYearCalendar(yearData))}
       
       {/* Color Legend with Last Contributed */}
       {!hideColorLegend && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-3 md:space-y-0">
           {/* Last contributed text on the left */}
           {displayYears[0] && (
             <p className="text-sm" style={{ 

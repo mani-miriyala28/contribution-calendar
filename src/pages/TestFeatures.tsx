@@ -373,7 +373,7 @@ export default function TestFeatures() {
 
           {/* Test 5: Custom Rendering */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">🎭 Test 5: Custom Render</h3>
+            <h3 className="{/* text-lg font-semibold */} mb-4">🎭 Test 5: Custom Render</h3>
             <GitHubCalendar
               username="octocat"
               theme="halloween"
